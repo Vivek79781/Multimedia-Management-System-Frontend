@@ -12,7 +12,7 @@ Multimedia Management System uses a number of open source projects to work prope
 - [React-Router-DOM](https://www.npmjs.com/package/react-router-dom) - some components and hooks like useParams, Link, History etc.
 - [Axios](https://axios-http.com/docs/intro) - making API Calls
 - [AntD](https://ant.design/) - frontend framework for components like Table, Icons etc.
-- [Backend](https://github.com/Vivek79781/Multimedia-Management-System-Backend.git) - Custom Made Backend
+- [Backend](https://github.com/Vivek79781/Multimedia-Management-System-Backend.git) - Custom Made Backend Module
 
 
 ## Installation
