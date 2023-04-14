@@ -38,6 +38,8 @@ const createMultimedia = (formData) => async dispatch => {
             type: ADD_MULTIMEDIA,
             payload: res.data
         })
+
+        dispatch(setAlert('Multimedia Created', 'success'));
     } catch (err) {
         const errors = err.response.data.errors;
         console.log('err', err);

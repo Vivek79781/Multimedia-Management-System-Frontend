@@ -3,16 +3,19 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link, Navigate } from 'react-router-dom'
 import { myMultimedia, createMultimedia, deleteMultimedia } from '../actions/multimedia'
-import { UserOutlined, InboxOutlined, UploadOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Table, Modal, Upload, Spin, Checkbox, Badge } from 'antd'
+import { UserOutlined, InboxOutlined, UploadOutlined, EyeOutlined, DeleteOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { Table, Modal, Upload, Spin, Checkbox, Badge, Input } from 'antd'
 import { loadUser } from '../actions/auth'
 import { setAlert } from '../actions/alert'
 import './Dashboard.css'
 import Alert from '../components/Alert'
 
+
+const Search = Input.Search;
 const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMultimedia, setAlert, deleteMultimedia }) => {
     const [modalData, setModalData] = useState(null);
     const [createModal, setCreateModal] = useState(false);
+    const [tableData, setTableData] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -35,6 +38,13 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
         if(auth.user)
             myMultimedia(auth.user.id)
     }, [myMultimedia, auth])
+
+    useEffect(() => {
+        if (multimedia) {
+            setTableData(multimedia)
+        }
+    }, [multimedia])
+
     const columns = [
         {
             title: 'Title',
@@ -146,6 +156,32 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
     if (!auth.isAuthenticated && !auth.loading) {
         return <Navigate to='/login' />
     }
+
+    const onSearchTitle = value => {
+        console.log(value)
+        if(value === '')
+            setTableData(multimedia)
+        else {
+            let filteredData = multimedia.filter((data) => {
+                return data.title.toLowerCase().includes(value.toLowerCase())
+            })
+            setTableData(filteredData)
+        }
+    }
+
+    const onSearchDescription = value => {
+        console.log(value)
+        if(value === '')
+            setTableData(multimedia)
+        else {
+            let filteredData = multimedia.filter((data) => {
+                return data.description.toLowerCase().includes(value.toLowerCase())
+            })
+            setTableData(filteredData)
+        }
+    }
+
+
     return (
         (auth.isAuthenticated && !auth.loading && auth.user) ? (
         <div className='container'>
@@ -161,12 +197,34 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
             </div>
             <h2 className="my-2">My Multimedia</h2>
             {multimedia.length > 0 ? (
-                <Table dataSource={multimedia} columns={columns} />
+                <>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                        <Search
+                            placeholder="Enter Description"
+                            onSearch={onSearchDescription}
+                            style={{ width: 300 }}
+                        />
+                        <Search
+                            placeholder="Enter Title"
+                            onSearch={onSearchTitle}
+                            style={{ width: 300 }}
+                        />
+                    </div>
+                    <Table dataSource={tableData} columns={columns} />
+                </>
             ) : (
                 <h4>No multimedia found...</h4>
             )}
             <Modal visible={modalData ? true : false} onCancel={() => setModalData(null)} footer={null} width={'100%'} height={'100%'}  bodyStyle={{ height: '100%' }}>
-                <iframe style={{ width: '100%', height: '100%', padding: '30px' }} src={modalData ? modalData.link : ''} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                {/* <div> */}
+                    <iframe style={{ width: '100%', height: '100%', padding: '30px' }} src={modalData ? modalData.link : ''} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                {/* </div> */}
+                {/* Download */}
+                <div style={{ position: 'absolute', top: '0px', right: '50px' }}>
+                    <a href={modalData ? modalData.link.replace('upload/', 'upload/fl_attachment:' + modalData.title + '/') : ''} target="_blank" style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                        <CloudDownloadOutlined style={{ fontSize: '40px' }} />
+                    </a>
+                </div>
             </Modal>
             <Modal visible={createModal} onCancel={() => setCreateModal(false)} footer={null}>
                 <h1>Add Multimedia</h1>
