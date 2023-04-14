@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link, Navigate } from 'react-router-dom'
 import { myMultimedia, createMultimedia, deleteMultimedia } from '../actions/multimedia'
-import { UserOutlined, InboxOutlined, UploadOutlined, EyeOutlined, DeleteOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { UserOutlined, InboxOutlined, EyeOutlined, DeleteOutlined, CloudDownloadOutlined, FileAddOutlined } from '@ant-design/icons';
 import { Table, Modal, Upload, Spin, Checkbox, Badge, Input } from 'antd'
 import { loadUser } from '../actions/auth'
 import { setAlert } from '../actions/alert'
@@ -192,7 +192,7 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
             </p>
             <div className="dash-buttons">
                 <Link to="#" className="btn btn-light" onClick={() => setCreateModal(true)}>
-                    <i className="fas fa-user-circle text-primary"></i> Create Multimedia
+                    <FileAddOutlined /> Create Multimedia
                 </Link>
             </div>
             <h2 className="my-2">My Multimedia</h2>
