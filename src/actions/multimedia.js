@@ -4,7 +4,7 @@ import { GET_MULTIMEDIA, MULTIMEDIA_ERROR, ADD_MULTIMEDIA, DELETE_MULTIMEDIA, GE
 
 const myMultimedia = userId => async dispatch => {
     try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/multimedia/user/${userId}`);
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/multimedia/me`);
         console.log('res.data', res.data);
         dispatch({
             type: GET_MULTIMEDIA,

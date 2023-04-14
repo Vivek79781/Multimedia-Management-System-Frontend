@@ -55,6 +55,25 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
                     {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
                 </span>
             ),
+            filters: [
+                {
+                    text: 'Image',
+                    value: 'image',
+                },
+                {
+                    text: 'Video',
+                    value: 'video',
+                },
+                {
+                    text: 'Audio',
+                    value: 'audio',
+                },
+                {
+                    text: 'Document',
+                    value: 'document',
+                }
+            ],
+            onFilter: (value, record) => record.type.indexOf(value) === 0,
         },
         {
             title: 'Privacy',
@@ -66,6 +85,17 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
                     <Badge count={record.public ? 'Public' : 'Private'} color={record.public === 1 ? 'green' : 'red'} />
                 </span>
             ),
+            filters: [
+                {
+                    text: 'Public',
+                    value: 1,
+                },
+                {
+                    text: 'Private',
+                    value: 0,
+                }
+            ],
+            onFilter: (value, record) => record.public == value,
         },
         {
             title: 'Action',
