@@ -119,7 +119,12 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
                             <a onClick={() => setModalData(record)}><EyeOutlined style={{ fontSize: '20px' }} /> </a>
                         </span>
                         <span>
-                            <a onClick={()=> deleteMultimedia(record.id)}><DeleteOutlined style={{ fontSize: '20px', color: 'red' }} /> </a>
+                            <a onClick={
+                                async()=> {
+                                    setLoader(true)
+                                    await deleteMultimedia(record.id)
+                                    setLoader(false)
+                                }}><DeleteOutlined style={{ fontSize: '20px', color: 'red' }} /> </a>
                         </span>
                         <span>
                             <a onClick={()=> setEditModal(record)}><EditOutlined style={{ fontSize: '20px', color: 'blue' }} /> </a>
