@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import { getMultimedias } from '../actions/multimedia'
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 import { Table, Modal, Spin, Input } from 'antd';
 import Alert from '../components/Alert'
 
@@ -139,7 +139,7 @@ const Multimedia = ({multimedias, getMultimedias, loading}) => {
                     onSearch={onSearchAuthor}
                     style={{ width: 300 }}
                 />
-                
+
                 <Search
                     placeholder="Enter Title"
                     onSearch={onSearchTitle}
@@ -157,6 +157,11 @@ const Multimedia = ({multimedias, getMultimedias, loading}) => {
             <Table dataSource={tableData} columns={columns} />
             <Modal visible={modalData ? true : false} onCancel={() => setModalData(null)} footer={null} width={'100%'} height={'100%'}  bodyStyle={{ height: '100%' }}>
                 <iframe style={{ width: '100%', height: '100%', padding: '30px' }} src={modalData ? modalData.link : ''} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                <div style={{ position: 'absolute', top: '0px', right: '50px' }}>
+                    <a href={modalData ? modalData.link.replace('upload/', 'upload/fl_attachment:' + modalData.title + '/') : ''} target="_blank" style={{ position: 'absolute', top: '10px', right: '10px' }}>
+                        <CloudDownloadOutlined style={{ fontSize: '40px' }} />
+                    </a>
+                </div>
             </Modal>
         </div> : <div className="container text-center">
             <Spin size='large' />
