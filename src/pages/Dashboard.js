@@ -23,6 +23,7 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
         type: '',
         public: true,
     })
+    const [loader, setLoader] = useState(false)
     const [editModal, setEditModal] = useState(null)
 
     const [fileList, setFileList] = useState([])
@@ -140,8 +141,10 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
         if(!formData.title || !formData.description || !formData.file || formData.type === '0')
             setAlert('Please fill all the fields', 'danger')
         else {
-            createMultimedia(formData)
             setCreateModal(false)
+            setLoader(true)
+            await createMultimedia(formData)
+            setLoader(false)
             setFormData({
                 title: '',
                 description: '',
@@ -198,6 +201,42 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
 
     return (
         (auth.isAuthenticated && !auth.loading && auth.user) ? (
+            (loader) ? (
+                <Spin tip="Uploading..." size='large'>
+                    <div className='container'>
+                        <Alert />
+                        <h1 className="large text-primary">Dashboard</h1>
+                        <p className="lead">
+                            <UserOutlined /> Welcome to your dashboard
+                        </p>
+                        <div className="dash-buttons">
+                            <Link to="#" className="btn btn-light" onClick={() => setCreateModal(true)}>
+                                <FileAddOutlined /> Add Multimedia
+                            </Link>
+                        </div>
+                        <h2 className="my-2">My Multimedia</h2>
+                        {multimedia.length > 0 ? (
+                            <>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                    <Search
+                                        placeholder="Enter Description"
+                                        onSearch={onSearchDescription}
+                                        style={{ width: 300 }}
+                                    />
+                                    <Search
+                                        placeholder="Enter Title"
+                                        onSearch={onSearchTitle}
+                                        style={{ width: 300 }}
+                                    />
+                                </div>
+                                <Table dataSource={tableData} columns={columns} />
+                            </>
+                        ) : (
+                            <h4>No multimedia found...</h4>
+                        )}
+                    </div> 
+                </Spin>
+            ) : (
         <div className='container'>
             <Alert />
             <h1 className="large text-primary">Dashboard</h1>
@@ -300,7 +339,10 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
                     <input type="submit" className="btn btn-primary" value="Edit" />
                 </form>
             </Modal>
-        </div>)
+            <Modal visible={loader} footer={null} closable={false}>
+                <Spin style={{fontSize: '30px'}} />
+            </Modal>
+        </div>))
         : <div className='container'>
             <Alert />
             <h1 className="large text-primary">Dashboard</h1>
