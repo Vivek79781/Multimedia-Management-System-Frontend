@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { setAlert } from './alert';
-import { GET_MULTIMEDIA, MULTIMEDIA_ERROR, ADD_MULTIMEDIA, DELETE_MULTIMEDIA, GET_MULTIMEDIAS } from './types';
+import { GET_MULTIMEDIA, MULTIMEDIA_ERROR, ADD_MULTIMEDIA, DELETE_MULTIMEDIA, GET_MULTIMEDIAS, EDIT_MULTIMEDIA } from './types';
 
 const myMultimedia = userId => async dispatch => {
     try {
@@ -106,5 +106,37 @@ const getMultimedias = id => async dispatch => {
     }
 }
 
+const editMultimedia = (formData) => async dispatch => {
+    const { id } = formData;
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }
 
-export { myMultimedia, createMultimedia, deleteMultimedia, getMultimedias }
+    try {
+        // console.log('formData', formData);
+        const res = await axios.put(`${process.env.REACT_APP_API_URL}/multimedia/${id}`, formData, config);
+        // console.log('res.data', res.data);
+        res.data.id = id;
+        dispatch({
+            type: EDIT_MULTIMEDIA,
+            payload: res.data
+        })
+        dispatch(setAlert('Multimedia Updated', 'success'));
+    } catch (err) {
+        const errors = err.response.data.errors;
+        // console.log('err', err);
+        if (errors) {
+            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+        }
+        dispatch({
+            type: MULTIMEDIA_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        })
+    }
+}
+
+
+
+export { myMultimedia, createMultimedia, deleteMultimedia, getMultimedias, editMultimedia };

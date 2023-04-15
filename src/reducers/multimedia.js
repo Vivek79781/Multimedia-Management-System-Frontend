@@ -1,4 +1,4 @@
-import { GET_MULTIMEDIA, MULTIMEDIA_ERROR, ADD_MULTIMEDIA, DELETE_MULTIMEDIA, GET_MULTIMEDIAS } from '../actions/types';
+import { GET_MULTIMEDIA, MULTIMEDIA_ERROR, ADD_MULTIMEDIA, DELETE_MULTIMEDIA, GET_MULTIMEDIAS, EDIT_MULTIMEDIA } from '../actions/types';
 
 const initialState = {
     multimedia: [],
@@ -35,6 +35,13 @@ export default function (state = initialState, action) {
                 multimedias: payload,
                 loading: false,
             };
+        case EDIT_MULTIMEDIA:
+            return {
+                ...state,
+                multimedia: state.multimedia.map(multimedia => multimedia.id === payload.id ? payload : multimedia),
+                loading: false,
+            };
+            
         case MULTIMEDIA_ERROR:
             return {
                 ...state,

@@ -13,7 +13,7 @@ const Multimedia = ({multimedias, getMultimedias, loading}) => {
     const { id } = useParams();
     const [tableData, setTableData] = useState([]);
     useEffect(() => {
-        console.log('id', id)
+        // console.log('id', id)
         getMultimedias(id)
     }, [getMultimedias, id])
 
@@ -60,14 +60,35 @@ const Multimedia = ({multimedias, getMultimedias, loading}) => {
                     {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
                 </span>
             ),
+            filters: [
+                {
+                    text: 'Video',
+                    value: 'video',
+                },
+                {
+                    text: 'Audio',
+                    value: 'audio',
+                },
+                {
+                    text: 'Image',
+                    value: 'image',
+                },
+                {
+                    text: 'Document',
+                    value: 'document',
+                }
+            ],
+            onFilter: (value, record) => record.type.indexOf(value) === 0,
         },
         {
             title: 'Action',
             key: 'action',
             render: (text, record) => (
-                <span>
-                        <a onClick={() => setModalData(record)}><EyeOutlined style={{ fontSize: '20px' }} /> </a>
-                </span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>
+                            <a onClick={() => setModalData(record)}><EyeOutlined style={{ fontSize: '20px' }} /> </a>
+                    </span>
+                </div>
             ),
         },
     ]

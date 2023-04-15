@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link, Navigate } from 'react-router-dom'
-import { myMultimedia, createMultimedia, deleteMultimedia } from '../actions/multimedia'
-import { UserOutlined, InboxOutlined, EyeOutlined, DeleteOutlined, CloudDownloadOutlined, FileAddOutlined } from '@ant-design/icons';
+import { myMultimedia, createMultimedia, deleteMultimedia, editMultimedia } from '../actions/multimedia'
+import { UserOutlined, InboxOutlined, EyeOutlined, DeleteOutlined, CloudDownloadOutlined, FileAddOutlined, EditOutlined } from '@ant-design/icons';
 import { Table, Modal, Upload, Spin, Checkbox, Badge, Input } from 'antd'
 import { loadUser } from '../actions/auth'
 import { setAlert } from '../actions/alert'
@@ -12,7 +12,7 @@ import Alert from '../components/Alert'
 
 
 const Search = Input.Search;
-const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMultimedia, setAlert, deleteMultimedia }) => {
+const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMultimedia, setAlert, deleteMultimedia, editMultimedia }) => {
     const [modalData, setModalData] = useState(null);
     const [createModal, setCreateModal] = useState(false);
     const [tableData, setTableData] = useState([]);
@@ -23,6 +23,7 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
         type: '',
         public: true,
     })
+    const [editModal, setEditModal] = useState(null)
 
     const [fileList, setFileList] = useState([])
     
@@ -112,12 +113,17 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
             key: 'action',
             render: (text, record) => (
                 <>
-                    <span>
-                        <a onClick={() => setModalData(record)}><EyeOutlined style={{ fontSize: '20px' }} /> </a>
-                    </span>
-                    <span>
-                        <a onClick={()=> deleteMultimedia(record.id)}><DeleteOutlined style={{ fontSize: '20px', color: 'red' }} /> </a>
-                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <span>
+                            <a onClick={() => setModalData(record)}><EyeOutlined style={{ fontSize: '20px' }} /> </a>
+                        </span>
+                        <span>
+                            <a onClick={()=> deleteMultimedia(record.id)}><DeleteOutlined style={{ fontSize: '20px', color: 'red' }} /> </a>
+                        </span>
+                        <span>
+                            <a onClick={()=> setEditModal(record)}><EditOutlined style={{ fontSize: '20px', color: 'blue' }} /> </a>
+                        </span>
+                    </div>
                 </>
             ),
         },
@@ -181,6 +187,14 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
         }
     }
 
+    const onChangeEdit = e => setEditModal({ ...editModal, [e.target.name]: e.target.value })
+    const onSubmitEdit = async e => {
+        e.preventDefault()
+        console.log(editModal)
+        editMultimedia(editModal)
+        setEditModal(null)
+    }
+
 
     return (
         (auth.isAuthenticated && !auth.loading && auth.user) ? (
@@ -192,7 +206,7 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
             </p>
             <div className="dash-buttons">
                 <Link to="#" className="btn btn-light" onClick={() => setCreateModal(true)}>
-                    <FileAddOutlined /> Create Multimedia
+                    <FileAddOutlined /> Add Multimedia
                 </Link>
             </div>
             <h2 className="my-2">My Multimedia</h2>
@@ -262,6 +276,30 @@ const Dashboard = ({ multimedia: { multimedia }, myMultimedia, auth, createMulti
                     <input type="submit" className="btn btn-primary" value="Create" />
                 </form>
             </Modal>
+            <Modal visible={editModal ? true : false} onCancel={() => setEditModal(null)} footer={null}>
+                <h1>Edit Multimedia</h1>
+                <form className="form" onSubmit={e => onSubmitEdit(e)}>
+                    <div className="form-group">
+                        <input type="text" placeholder="Title"  name="title" value={editModal ? editModal.title : ''} onChange={e => onChangeEdit(e)} />
+                    </div>
+                    <div className="form-group">
+                        <textarea placeholder="Description" name="description" onChange={e => onChangeEdit(e)} rows="4" cols="50" value={editModal ? editModal.description : ''}></textarea>
+                    </div>
+                    <div className="form-group">
+                        <select name="type" value={editModal ? editModal.type : '0'} onChange={e => onChangeEdit(e)}>
+                            <option value="0">* Select Multimedia Type</option>
+                            <option value="video">Video</option>
+                            <option value="audio">Audio</option>
+                            <option value="image">Image</option>
+                            <option value="document">Document</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <Checkbox name="public" onChange={e => setEditModal({ ...editModal, public: !e.target.checked })} checked={editModal ? !editModal.public : false}>Private</Checkbox>
+                    </div>
+                    <input type="submit" className="btn btn-primary" value="Edit" />
+                </form>
+            </Modal>
         </div>)
         : <div className='container'>
             <Alert />
@@ -285,4 +323,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, { myMultimedia, createMultimedia, setAlert, deleteMultimedia })(Dashboard)
+export default connect(mapStateToProps, { myMultimedia, createMultimedia, setAlert, deleteMultimedia, editMultimedia })(Dashboard)
