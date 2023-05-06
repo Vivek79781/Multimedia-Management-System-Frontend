@@ -33,7 +33,7 @@ const Login = ({ login, isAuthenticated }) => {
             <p className="lead">< UserOutlined /> Sign In Your Account</p>
             <form className="form" onSubmit={e => onSubmit(e)}>
                 <div className="form-group">
-                <input type="email" placeholder="Email Address" name="email" value={email} onChange={e => onChange(e)} required />
+                <input type="text" placeholder="Email Address" name="email" value={email} onChange={e => onChange(e)} required />
                 </div>
                 <div className="form-group">
                 <input
